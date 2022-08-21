@@ -1,0 +1,187 @@
+<p>toolbarcomponent works!</p>
+{{ dateFieldArray.length }}
+<div *ngFor="let datefield of dateFieldArray; let i = index">
+<div>
+    <mat-form-field
+      *ngIf="datefield.filetrType == 'Absolute'"
+      class="ngp-input-form-field global-width-form-input"
+      [ngClass]="
+        checkDateEmpty(datefield.start)
+          ? 'mat-form-field-invalid ngp-input-form-field'
+          : 'ngp-input-form-field'
+      "
+    >
+      <mat-label><span class="value-required">* </span>{{ 'Start Date'}}</mat-label>
+      <input
+        matInput
+        #startDateRef
+        *ngIf="this.dateFieldArray[i].dataype !== 'Date'"
+        value="{{
+          datefield.selectedStartDate 
+        }}"
+        (click)="$event.stopPropagation()"
+        readonly
+      />
+      <input
+        matInput
+        #startDateRef
+        *ngIf="this.dateFieldArray[i].dataype == 'Date'"
+        value="{{
+          ' '
+            ? (datefield.selectedStartDate )
+            : ''
+        }}"
+        (click)="$event.stopPropagation()"
+        readonly
+      />
+
+      <!-- <mat-icon
+        class="cancel-icon-filter-date icon-off"
+        (click)="
+          enableReset(); datefield.start = ''; datefield.startTime = ''; datefield.selectedStartDate = new Date()
+        "
+        matSuffix
+        *ngIf="datefield.start != ''"
+        >highlight_off</mat-icon
+      > -->
+      <mat-icon
+        matDatepickerToggleIcon
+        class="date-mat-icon"
+        [matMenuTriggerFor]="calender"
+        
+        #StartDateCalenderTrigger="matMenuTrigger"
+        matSuffix
+        >calendar_today</mat-icon
+      >
+    </mat-form-field>
+    <mat-menu #calender="matMenu" class="share-exp-date-menu" xPosition="before" yPosition="below">
+      {{datefield.selectedStartDate}}
+      <a (click)="$event.stopPropagation(); $event.preventDefault()">
+        <div class="share-date-picker-main">
+          <mat-calendar
+            #startDateCalendar
+            [selected]="datefield.selectedStartDate"
+            (selectedChange)="onChangeStartDate($event, i)"
+            (click)="$event.stopPropagation()"
+          ></mat-calendar>
+          <div class="time-bottom-div">
+            <span class="time-text">{{ 'Start Time'}}</span>
+            <input
+              class="time-input"
+              type="time"
+              step="2"
+              [(ngModel)]="datefield.startTime"
+              (ngModelChange)="onChangeStartTime(i, $event)"
+              (keydown.backspace)="onChangeStartTime(i, $event)"
+              (input)="startTimeErrMsg[i] = ' '"
+              (click)="$event.stopPropagation()"
+              [disabled]="datefield.dataype == 'Date'"
+              [style.cursor]="datefield.dataype == 'Date' ? 'not-allowed' : ''"
+            />
+          </div>
+
+          <mat-error class="time-bottom-err-div" *ngIf="showStartErrorMessage[i]">{{
+            startTimeErrMsg[i]
+          }}</mat-error>
+
+          <div class="div-btn-actions">
+            <button mat-raised-button color="primary" (click)="applyStartDate(i)">{{ 'Apply'}}</button>
+          </div>
+        </div>
+      </a>
+    </mat-menu>
+    <mat-form-field
+      *ngIf="datefield.filetrType == 'Absolute'"
+      class="ngp-input-form-field global-width-form-input"
+      [ngClass]="
+        checkDateEmpty(datefield.end)
+          ? 'mat-form-field-invalid ngp-input-form-field'
+          : 'ngp-input-form-field'
+      "
+    >
+      <mat-label><span class="value-required">* </span>{{ 'End Date'}}</mat-label>
+      <input
+        matInput
+        #endDateRef
+        *ngIf="this.dateFieldArray[i].dataype !== 'Date'"
+        value="{{
+          ' '
+            ? (datefield.selectedEndDate )
+            : ''
+        }} {{
+          ' '
+            ? (datefield.selectedEndDate )
+            : ''
+        }} {{ ' ' && ' ' ? ' ' : '' }}"
+        (click)="$event.stopPropagation()"
+        readonly
+      />
+      <input
+        matInput
+        #endDateRef
+        *ngIf="this.dateFieldArray[i].dataype == 'Date'"
+        value="{{
+          ' '
+            ? (datefield.selectedEndDate)
+            : ''
+        }}"
+        (click)="$event.stopPropagation()"
+        readonly
+      />
+      <!-- <mat-icon
+        class="cancel-icon-filter-date icon-off"
+        (click)="
+          enableReset(); datefield.end = ''; datefield.endTime = ''; datefield.selectedEndDate = ''
+        "
+        matSuffix
+        *ngIf="datefield.end != ''"
+        >highlight_off</mat-icon
+      > -->
+      <mat-icon
+        matDatepickerToggleIcon
+        class="date-mat-icon"
+        [matMenuTriggerFor]="calender1"
+        #EndDateCalenderTrigger="matMenuTrigger"
+        (menuOpened)="DateMenuOpened()"
+        matSuffix
+      >
+        calendar_today</mat-icon
+      >
+    </mat-form-field>
+    <mat-menu #calender1="matMenu" class="share-exp-date-menu" xPosition="before" yPosition="below">
+      <a (click)="$event.stopPropagation(); $event.preventDefault()">
+        <div class="share-date-picker-main">
+          <mat-calendar
+            #endDateCalendar
+            [selected]="datefield.selectedEndDate"
+            (selectedChange)="onChangeEndDate($event, i)"
+            (click)="$event.stopPropagation()"
+          ></mat-calendar>
+          <div class="time-bottom-div">
+            <span class="time-text">{{ 'End Time'}}</span>
+            <input
+              class="time-input"
+              type="time"
+              step="2"
+              [(ngModel)]="datefield.endTime"
+              (ngModelChange)="onChangeEndTime(i, $event)"
+              (keydown.backspace)="onChangeEndTime(i, $event)"
+              (click)="$event.stopPropagation()"
+              (input)="endTimeErrMsg[i] = ' '"
+              [disabled]="datefield.dataype === 'Date'"
+              
+            />
+          </div>
+
+          <!-- <mat-error class="time-bottom-err-div" *ngIf="showEndErrorMessage[i]">{{
+            endTimeErrMsg[i]
+          }}</mat-error> -->
+
+          <div class="div-btn-actions">
+            <button mat-raised-button color="primary" (click)="applyEndDate(i)">{{ 'Apply'}}</button>
+          </div>
+        </div>
+      </a>
+    </mat-menu>
+  </div>
+</div>
